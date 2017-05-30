@@ -4,7 +4,12 @@
 		"babel-plugin-node-source-map-support": "^0.0.1",
 		"babel-preset-codogo": "^1.0.11",
 		"babel-preset-env": "^1.5.1",
-		"babel-register": "^6.24.1"
+		"babel-register": "^6.24.1",
+		"eslint": "^3.19.0",
+		"eslint-config-codogo": "^1.1.4",
+		"husky": "^0.13.4",
+		"prettier": "^1.3.1",
+		"validate-commit-message": "^3.0.1"
 	},
 	"eslintConfig": {
 		"extends": "codogo"
@@ -15,6 +20,14 @@
 		]
 	},
 	"scripts": {
+		"commitmsg": "validate-commit-msg",
+		"format": "yarn run prettier && eslint --fix src",
+		"freddie-fix-lint": "yarn run format && for f in $( yarn run lint | grep \"codogo-app-write/src\" ) ; do nvim $f ; done",
+		"lint": "eslint --max-warnings 5 src",
+		"postmerge": "yarn install",
+		"postrewrite": "yarn install",
+		"precommit": "npm run format",
+		"prettier": "prettier --use-tabs --tab-width 4 --trailing-comma all --write \"src/**/*.js\"",
 		"make": "make lib -j 4",
 		"start": "yarn run make && yarn run run-script",
 		"remotedev": "remotedev --hostname=localhost --port=3000",

@@ -12,20 +12,20 @@ const mailgunClient = mailgun({
 });
 
 const unitKeyPairs = [
-	[ 1,  "day", ],
-	[ 3,  "days", ],
-	[ 1,  "week", ],
-	[ 2,  "weeks", ],
-	[ 1,  "month", ],
-	[ 3,  "months", ],
+	[1, "day",],
+	[3, "days",],
+	[1, "week",],
+	[2, "weeks",],
+	[1, "month",],
+	[3, "months",],
 ];
 
-export const sendReportToMe = (key) => {
-	const variances = unitKeyPairs.map( ([ n, unit, ]) => R.pipe(
-		R.prop("currentDeviationRelative"),
-
-		sigFig(3),
-	)( calculateDataForArgs(key, n, unit)));
+export const sendReportToMe = key => {
+	const variances = unitKeyPairs.map(([n, unit,]) =>
+		R.pipe(R.prop("currentDeviationRelative"), sigFig(3))(
+			calculateDataForArgs(key, n, unit),
+		),
+	);
 
 	var data = {
 		from: "Freddie Ridell <freddie.ridell@gmail.com>",
@@ -35,22 +35,21 @@ export const sendReportToMe = (key) => {
 	};
 
 	console.log("sending mail");
-	mailgunClient.messages().send(data, function (error, body) {
-		console.log("mail sent");
-	});
+	mailgunClient.messages().send(data, () => console.log("mail sent"));
 };
 
-export default (key) => {
-	unitKeyPairs.forEach( ([ n, unit, ]) => {
-		const { currentDeviationRelative } = calculateDataForArgs(key, n, unit);
+export default key => {
+	unitKeyPairs.forEach(([n, unit,]) => {
+		const { currentDeviationRelative, } = calculateDataForArgs(key, n, unit);
 
-		if(Math.abs(currentDeviationRelative) > 1){
-			console.log(`outside of bounds for ${ key } over a period of ${n} ${unit}, sending report`);
+		if (Math.abs(currentDeviationRelative) > 1) {
+			console.log(
+				`outside of bounds for ${key} over a period of ${n} ${unit}, sending report`,
+			);
 			sendReportToMe(key);
 		}
 
 		return;
 	});
-	console.log(`within bounds for ${ key }, doing nothing`);
-}
-
+	console.log(`within bounds for ${key}, doing nothing`);
+};

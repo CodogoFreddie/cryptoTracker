@@ -1,26 +1,26 @@
-import R from "ramda";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
 import calculateDataForArgs from "./calculateDataForArgs";
 
-export const sigFig = (n) => (x) => {
-	if(typeof x === "number"){
+export const sigFig = n => x => {
+	if (typeof x === "number") {
 		const exponent = Math.floor(Math.log10(x)) - n;
-		const significand = ( x ) / Math.pow(10, exponent);
+		const significand = x / Math.pow(10, exponent);
 
-		return ( "" + ( Math.round(significand) * Math.pow(10, exponent) ) ).slice(0, n + 1);
-	}
-	else{
+		return ("" + Math.round(significand) * Math.pow(10, exponent)).slice(
+			0,
+			n + 1,
+		);
+	} else {
 		return x;
 	}
 };
 
 export default (key, periodPairs) => {
-
-	const data = periodPairs.map( ([n, unit,]) => 
-		calculateDataForArgs(key, n, unit, true)
-	)
+	const data = periodPairs.map(([n, unit,]) =>
+		calculateDataForArgs(key, n, unit, true),
+	);
 
 	return ReactDOMServer.renderToStaticMarkup(
 		<div>
@@ -28,8 +28,8 @@ export default (key, periodPairs) => {
 
 			<table
 				style = { {
-					"tableLayout": "fixed",
-					"width": "100%",
+					tableLayout: "fixed",
+					width: "100%",
 				} }
 			>
 				<tbody>
@@ -40,8 +40,8 @@ export default (key, periodPairs) => {
 						<td>Deviation (non-normalised)</td>
 						<td>Data Points</td>
 					</tr>
-					{
-						data.map( ({
+					{data.map(
+						({
 							period,
 							mean,
 							currentValue,
@@ -49,17 +49,23 @@ export default (key, periodPairs) => {
 							currentDeviation,
 							data,
 						}) => (
-							<tr key = { period } >
+							<tr key = { period }>
 								<td>{period}</td>
 								<td>{sigFig(4)(mean)}</td>
 								<td>{sigFig(4)(currentValue)}</td>
-								<td>{sigFig(4)(currentDeviationRelative)} ({sigFig(4)(currentDeviation)})</td>
+								<td>
+									{sigFig(4)(currentDeviationRelative)}
+									{" "}
+									(
+									{sigFig(4)(currentDeviation)}
+									)
+								</td>
 								<td>{sigFig(4)(data)}</td>
 							</tr>
-						))
-					}
+						),
+					)}
 				</tbody>
 			</table>
-		</div>
-	)
+		</div>,
+	);
 };
