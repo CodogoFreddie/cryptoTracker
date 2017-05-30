@@ -9,7 +9,8 @@ lib: clear $(LIB)
 
 lib/%.js: src/%.js makefile package.json
 	@ mkdir -p $(@D)
-	babel $< -o $@ --source-maps
+	@ echo "babel $<"
+	@ NODE_ENV="production" babel $< -o $@ --source-maps
 
 clear:
 	clear

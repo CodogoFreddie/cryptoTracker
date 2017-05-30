@@ -6,14 +6,12 @@
 		"babel-preset-env": "^1.5.1",
 		"babel-register": "^6.24.1"
 	},
+	"eslintConfig": {
+		"extends": "codogo"
+	},
 	"babel": {
 		"presets": [
-			"env"
-		],
-		"plugins": [
-			"transform-object-rest-spread",
-			"syntax-trailing-function-commas",
-			"babel-plugin-node-source-map-support"
+			"codogo"
 		]
 	},
 	"scripts": {
@@ -23,9 +21,12 @@
 		"watch": "yarn make lib && watchman-make -p \"package.json\" \"makefile\" \"src/**/*.js\" -t run"
 	},
 	"dependencies": {
+		"mailgun-js": "^0.11.2",
 		"moment": "^2.18.1",
 		"node-fetch": "^1.7.0",
 		"ramda": "^0.24.0",
+		"react": "^15.5.4",
+		"react-dom": "^15.5.4",
 		"redux": "^3.6.0",
 		"redux-logger": "^3.0.6",
 		"redux-persist": "^4.8.0",
