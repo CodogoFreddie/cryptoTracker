@@ -47,17 +47,22 @@ persistStore(
 		storage: new AsyncNodeStorage("./storage"),
 		debounce: 1000,
 	},
-	() => {
-		createAnomalyWatcherSubscription("btc_eth");
-		makeMorningReport("btc_eth");
-		createGetSubscription("btc", "eth");
+	() =>
+		[
+			"btc_gbp",
+			"eth_gbp",
+			"etc_gbp",
+			"xmr_gbp",
 
-		createAnomalyWatcherSubscription("btc_gbp");
-		makeMorningReport("btc_gbp");
-		createGetSubscription("btc", "gbp");
+			"btc_eth",
+			"etc_eth",
+			"xmr_eth",
 
-		createAnomalyWatcherSubscription("eth_gbp");
-		makeMorningReport("eth_gbp");
-		createGetSubscription("eth", "gbp");
-	},
+			"etc_btc",
+			"xmr_btc",
+		].forEach(key => {
+			createAnomalyWatcherSubscription(key);
+			makeMorningReport(key);
+			createGetSubscription(key.split("_")[0], key.split("_")[1]);
+		}),
 );

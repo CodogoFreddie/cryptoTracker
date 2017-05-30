@@ -34,9 +34,17 @@ const generateReducer = key => (state = {}, action) => {
 
 const reducer = combineReducers(
 	R.pipe(R.map(key => [key, generateReducer(key),]), R.fromPairs)([
-		"btc_eth",
 		"btc_gbp",
 		"eth_gbp",
+		"etc_gbp",
+		"xmr_gbp",
+
+		"btc_eth",
+		"etc_eth",
+		"xmr_eth",
+
+		"etc_btc",
+		"xmr_btc",
 	]),
 );
 
