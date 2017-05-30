@@ -35,7 +35,12 @@ export const sendReportToMe = key => {
 	};
 
 	console.log("sending mail");
-	mailgunClient.messages().send(data, () => console.log("mail sent"));
+	mailgunClient.messages().send(data, (err, data) => {
+		if (err) {
+			console.error(err);
+		}
+		console.log("mail sent", data);
+	});
 };
 
 export default key => {
