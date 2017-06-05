@@ -3,7 +3,7 @@ LIB = $(SRC:src/%.js=lib/%.js)
 
 .PHONY: run
 run: lib
-	node --max-old-space-size=8192 lib/index.js
+	node lib/generateAndSendReport.js
 
 lib: clear $(LIB)
 

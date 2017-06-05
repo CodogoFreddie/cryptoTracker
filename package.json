@@ -36,6 +36,7 @@
 	"dependencies": {
 		"mailgun-js": "^0.11.2",
 		"moment": "^2.18.1",
+		"mysql": "^2.13.0",
 		"node-fetch": "^1.7.0",
 		"ramda": "^0.24.0",
 		"react": "^15.5.4",
