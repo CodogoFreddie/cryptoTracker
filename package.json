@@ -30,8 +30,8 @@
 		"prettier": "prettier --use-tabs --tab-width 4 --trailing-comma all --write \"src/**/*.js\"",
 		"make": "make lib -j 4",
 		"update": "git reset --hard HEAD && git checkout master && git pull",
-		"fetch": "yarn make && node $PWD/lib/loader.js",
-		"generate": "yarn make && node $PWD/lib/generateAndSendReport.js",
+		"fetch": "yarn make && node lib/loader.js",
+		"generate": "yarn make && node lib/generateAndSendReport.js",
 		"watch": "yarn make lib && watchman-make -p \"package.json\" \"makefile\" \"src/**/*.js\" -t run"
 	},
 	"dependencies": {
