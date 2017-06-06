@@ -29,8 +29,9 @@
 		"precommit": "npm run format",
 		"prettier": "prettier --use-tabs --tab-width 4 --trailing-comma all --write \"src/**/*.js\"",
 		"make": "make lib -j 4",
-		"start": "yarn run make && yarn run run-script",
-		"remotedev": "remotedev --hostname=localhost --port=3000",
+		"update": "git reset --hard HEAD && git checkout master && git pull",
+		"fetch": "yarn make && node $PWD/lib/loader.js",
+		"generate": "yarn make && node $PWD/lib/generateAndSendReport.js",
 		"watch": "yarn make lib && watchman-make -p \"package.json\" \"makefile\" \"src/**/*.js\" -t run"
 	},
 	"dependencies": {
