@@ -1,7 +1,6 @@
 import mysql from "mysql";
 
-import getAverage from "./getAverage";
-import getStdDev from "./getStdDev";
+import getDerived from "./getDerived";
 
 const connection = mysql.createConnection({
 	host: "localhost",
@@ -9,8 +8,10 @@ const connection = mysql.createConnection({
 	password: "",
 });
 
-getAverage(connection, "btc", "eth", 1, "day").then(console.log);
-getStdDev(connection, "btc", "eth", 1, "day").then(console.log);
+getDerived(connection, "btc", "eth", 1, "day", "stddev").then(console.log);
+getDerived(connection, "btc", "eth", 1, "day", "avg").then(console.log);
+getDerived(connection, "btc", "eth", 1, "day", "min").then(console.log);
+getDerived(connection, "btc", "eth", 1, "day", "max").then(console.log);
 
 connection.end(function(err) {
 	console.log("DONE SQL");
