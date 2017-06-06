@@ -2,16 +2,16 @@ import mysql from "mysql";
 
 import getDerived from "./getDerived";
 
+import report from "./components";
+import sendReportAsMail from "./sendReportAsMail";
+
 const connection = mysql.createConnection({
 	host: "localhost",
 	user: "freddie",
 	password: "",
 });
 
-getDerived(connection, "btc", "eth", 1, "day", "stddev").then(console.log);
-getDerived(connection, "btc", "eth", 1, "day", "avg").then(console.log);
-getDerived(connection, "btc", "eth", 1, "day", "min").then(console.log);
-getDerived(connection, "btc", "eth", 1, "day", "max").then(console.log);
+report(connection).then(sendReportAsMail);
 
 connection.end(function(err) {
 	console.log("DONE SQL");
