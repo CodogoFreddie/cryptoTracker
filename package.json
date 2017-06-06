@@ -21,17 +21,17 @@
 	},
 	"scripts": {
 		"commitmsg": "validate-commit-msg",
+		"fetch": "yarn make && node lib/loader.js",
 		"format": "yarn run prettier && eslint --fix src",
 		"freddie-fix-lint": "yarn run format && for f in $( yarn run lint | grep \"codogo-app-write/src\" ) ; do nvim $f ; done",
+		"generate": "yarn make && node lib/generateAndSendReport.js",
 		"lint": "eslint --max-warnings 5 src",
+		"make": "make lib -j 4",
 		"postmerge": "yarn install",
 		"postrewrite": "yarn install",
 		"precommit": "npm run format",
 		"prettier": "prettier --use-tabs --tab-width 4 --trailing-comma all --write \"src/**/*.js\"",
-		"make": "make lib -j 4",
 		"update": "git reset --hard HEAD && git checkout master && git pull",
-		"fetch": "yarn make && node lib/loader.js",
-		"generate": "yarn make && node lib/generateAndSendReport.js",
 		"watch": "yarn make lib && watchman-make -p \"package.json\" \"makefile\" \"src/**/*.js\" -t run"
 	},
 	"dependencies": {
