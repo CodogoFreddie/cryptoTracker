@@ -29,7 +29,7 @@ export default ({ getDerived, lhs, rhs, }) => (
 					<td>Min</td>
 					<td>Average</td>
 					<td>Std Dev</td>
-					<td>Volitility</td>
+					<td>Stability</td>
 					<td>Max</td>
 					<td>Data Points</td>
 				</tr>

@@ -1,7 +1,5 @@
 import mysql from "mysql";
 
-import getDerived from "./getDerived";
-
 import report from "./components";
 import sendReportAsMail from "./sendReportAsMail";
 

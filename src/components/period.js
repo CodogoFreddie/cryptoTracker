@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-import getDerived from "../getDerived";
-
 const TextCell = styled.td`
 
 `;
@@ -15,7 +13,7 @@ export default ({ getDerived, lhs, rhs, n, unit, }) => {
 	const min = getDerived(lhs, rhs, n, unit, "min");
 	const avg = getDerived(lhs, rhs, n, unit, "avg");
 	const stdDev = getDerived(lhs, rhs, n, unit, "stddev");
-	const volitility = Math.round(stdDev / avg * 5000);
+	const stability = Math.round(avg / stdDev);
 	const max = getDerived(lhs, rhs, n, unit, "max");
 	const count = getDerived(lhs, rhs, n, unit, "count");
 
@@ -33,7 +31,7 @@ export default ({ getDerived, lhs, rhs, n, unit, }) => {
 				{stdDev}
 			</NumCell>
 			<NumCell>
-				{volitility}
+				{stability}
 			</NumCell>
 			<NumCell>
 				{max}

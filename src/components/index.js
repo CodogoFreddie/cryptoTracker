@@ -62,9 +62,9 @@ export default connection => {
 		const getDerived = (lhs, rhs, n, unit, derived) =>
 			sigFig(5)(dataCache[lhs + rhs + n + unit + derived]);
 
-		const Component = props => (
+		const Component = () => (
 			<div>
-				<Title>Crypto Report </Title>
+				<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
 
 				<code>calculated in {duration.humanize()}</code>
 

@@ -1,4 +1,5 @@
 import mailgun from "mailgun-js";
+import moment from "moment";
 
 import { apiKey, domain, } from "./secrets";
 
@@ -11,7 +12,7 @@ export default html => {
 	var data = {
 		from: "Freddie Ridell <freddie.ridell@gmail.com>",
 		to: "freddie.ridell@gmail.com, ",
-		subject: "Daily Crypto Report",
+		subject: `Daily Crypto Report (${moment().format("DD-MM-YY")})`,
 		html,
 	};
 
