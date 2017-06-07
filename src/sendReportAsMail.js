@@ -1,17 +1,15 @@
 import mailgun from "mailgun-js";
 import moment from "moment";
 
-import { apiKey, domain, } from "./secrets";
-
 const mailgunClient = mailgun({
-	apiKey,
-	domain,
+	apiKey: process.env.API_KEY,
+	domain: process.env.DOMAIN,
 });
 
 export default html => {
 	var data = {
-		from: "Freddie Ridell <freddie.ridell@gmail.com>",
-		to: "freddie.ridell@gmail.com, ",
+		from: process.env.FROM_EMAIL,
+		to: process.env.TO_EMAILS,
 		subject: `Daily Crypto Report (${moment().format("DD-MM-YY")})`,
 		html,
 	};

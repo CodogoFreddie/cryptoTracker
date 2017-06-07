@@ -60,3 +60,4 @@ typings/
 storage
 lib
 src/secrets.js
+.env

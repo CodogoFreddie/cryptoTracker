@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 import mysql from "mysql";
 
 import report from "./components";
