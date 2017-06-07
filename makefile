@@ -13,7 +13,7 @@ lib/%.js: src/%.js makefile package.json
 	@ NODE_ENV="production" babel $< -o $@ --source-maps
 
 clear:
-	clear
+	#clear
 
 .PHONY: clean
 clean:
