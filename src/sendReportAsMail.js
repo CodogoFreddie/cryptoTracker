@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 import mailgun from "mailgun-js";
 import moment from "moment";
 
