@@ -45,6 +45,7 @@ export default connection => {
 	);
 
 	const dataCache = {};
+	const normalisedDataCache = {};
 
 	const start = moment();
 	return Promise.all(
@@ -53,36 +54,46 @@ export default connection => {
 				dataCache[lhs + rhs + n + unit + derived] = result;
 			}),
 		),
-	).then(() => {
-		const end = moment();
-		const diff = start.diff(end);
+	)
+		.then(() => {
+			configurations.map(({ lhs, rhs, n, unit, derived, }) => {
+				normalisedDataCache[lhs + rhs + n + unit + derived] =
+					dataCache[lhs + rhs + n + unit + derived] /
+					dataCache[lhs + rhs + "3months" + derived];
+			});
+		})
+		.then(() => {
+			const end = moment();
+			const diff = start.diff(end);
 
-		const duration = moment.duration(diff);
+			const duration = moment.duration(diff);
 
-		const getDerived = (lhs, rhs, n, unit, derived) =>
-			sigFig(5)(dataCache[lhs + rhs + n + unit + derived]);
+			const getDerived = (lhs, rhs, n, unit, derived) =>
+				sigFig(5)(normalisedDataCache[lhs + rhs + n + unit + derived]);
 
-		const Component = () => (
-			<div>
-				<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
+			const Component = () => (
+				<div>
+					<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
 
-				<code>calculated in {duration.humanize()}</code>
+					<code>calculated in {duration.humanize()}</code>
 
-				{pairs.map(([lhs, rhs,]) => (
-					<Exchange
-						key = { lhs + rhs }
-						getDerived = { getDerived }
-						lhs = { lhs }
-						rhs = { rhs }
-					/>
-				))}
-			</div>
-		);
+					{pairs.map(([lhs, rhs,]) => (
+						<Exchange
+							key = { lhs + rhs }
+							getDerived = { getDerived }
+							lhs = { lhs }
+							rhs = { rhs }
+						/>
+					))}
+				</div>
+			);
 
-		const sheet = new ServerStyleSheet();
-		const html = renderToStaticMarkup(sheet.collectStyles(<Component />));
-		const css = sheet.getStyleTags();
+			const sheet = new ServerStyleSheet();
+			const html = renderToStaticMarkup(
+				sheet.collectStyles(<Component />),
+			);
+			const css = sheet.getStyleTags();
 
-		return `<html><head>${css}</head><body>${html}</body></html>`;
-	});
+			return `<html><head>${css}</head><body>${html}</body></html>`;
+		});
 };

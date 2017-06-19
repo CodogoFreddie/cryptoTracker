@@ -12,7 +12,7 @@ import R from "ramda";
 //["eth", "xmr",],
 //];
 
-const currencies = ["btc", "eth", "xmr", "etc", "gbp", "usd",];
+export const currencies = ["btc", "eth", "xmr", "etc", "gbp", "usd",];
 
 const newPairs = R.pipe(
 	R.flatten,
