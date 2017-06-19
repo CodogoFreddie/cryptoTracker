@@ -8,11 +8,7 @@ const TextCell = styled.td`
 
 const NumCell = styled.td`
 	font-family: monospace;
-	${({ score, }) => (
-		(score)
-		? `background-color: ${ mix(score, "#f00", "#0f0" )  };`
-		: ""
-	)};
+	${({ score, }) => (score ? `background-color: ${mix(score, "#f00", "#0f0")};` : "")};
 `;
 
 export default ({ getDerived, lhs, rhs, n, unit, }) => {
@@ -36,7 +32,7 @@ export default ({ getDerived, lhs, rhs, n, unit, }) => {
 			<NumCell>
 				{stdDev}
 			</NumCell>
-			<NumCell score = { ( stability - 10 ) / 200 } >
+			<NumCell score = { (stability - 10) / 200 }>
 				{stability}
 			</NumCell>
 			<NumCell>
