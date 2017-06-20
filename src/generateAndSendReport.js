@@ -2,8 +2,9 @@ require("dotenv").config();
 
 import mysql from "mysql";
 
-import report from "./components";
-import sendReportAsMail from "./sendReportAsMail";
+import collateData from "./collateData";
+//import report from "./components";
+//import sendReportAsMail from "./sendReportAsMail";
 
 const connection = mysql.createConnection({
 	host: "localhost",
@@ -11,7 +12,10 @@ const connection = mysql.createConnection({
 	password: "",
 });
 
-report(connection).then(sendReportAsMail);
+collateData(connection)
+.then(console.log)
+	//.then(report)
+//.then(sendReportAsMail)
 
 connection.end(function(err) {
 	console.log("DONE SQL");

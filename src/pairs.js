@@ -1,20 +1,8 @@
 import R from "ramda";
 
-//const oldPairs = [
-//["btc", "gbp",],
-//["eth", "gbp",],
-
-//["btc", "eth",],
-//["eth", "etc",],
-
-//["btc", "etc",],
-//["btc", "xmr",],
-//["eth", "xmr",],
-//];
-
 export const currencies = ["btc", "eth", "xmr", "etc", "gbp", "usd",];
 
-const newPairs = R.pipe(
+export default R.pipe(
 	R.flatten,
 	R.filter(Boolean),
 	R.map(({ lhs, rhs, }) => [lhs, rhs,]),
@@ -22,7 +10,7 @@ const newPairs = R.pipe(
 	currencies.map((lhs, li) =>
 		currencies.map(
 			(rhs, ri) =>
-				ri > li
+				ri !== li
 					? {
 						lhs,
 						rhs,
@@ -32,4 +20,3 @@ const newPairs = R.pipe(
 	),
 );
 
-export default newPairs;
