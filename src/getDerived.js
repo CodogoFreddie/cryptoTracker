@@ -1,5 +1,6 @@
 import moment from "moment";
-import R from "ramda";
+
+import comboToKey from "./comboToKey";
 
 export default (connection, lhs, rhs, n, unit, derived) =>
 	new Promise(done =>
@@ -9,9 +10,10 @@ export default (connection, lhs, rhs, n, unit, derived) =>
 				timeout: 40000,
 				values: [moment().subtract(n, unit).unix(), lhs, rhs,],
 			},
-			(err, res) => done([
-				`${lhs }_${ rhs }_${ n }_${ unit }_${ derived}`,
-				res[0][`${derived.toUpperCase()}(rate)`],
-			]),
+			(err, res) =>
+				done([
+					comboToKey({ lhs, rhs, n, unit, derived, }),
+					res[0][`${derived.toUpperCase()}(rate)`],
+				]),
 		),
 	);

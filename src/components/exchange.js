@@ -26,11 +26,9 @@ export default ({ getDerived, lhs, rhs, }) => (
 			<tbody>
 				<tr>
 					<td>Period</td>
-					<td>Min</td>
 					<td>Average</td>
 					<td>Std Dev</td>
 					<td>Stability</td>
-					<td>Max</td>
 					<td>Data Points</td>
 				</tr>
 
