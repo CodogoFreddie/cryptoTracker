@@ -4,11 +4,9 @@ import styled, { ServerStyleSheet, } from "styled-components";
 
 import moment from "moment";
 
-import pairs, { currencies, } from "../pairs";
+import { currencies, } from "../pairs";
 import comboToKey from "../comboToKey";
-import sigFig from "../sigFig";
 
-import Exchange from "./exchange";
 import Currency from "./currency";
 
 const Title = styled.h1`
@@ -16,29 +14,38 @@ const Title = styled.h1`
 `;
 
 export default dataTable => {
-	const getDerived = (lhs, rhs, n, unit, derived) =>
-		sigFig(5)(dataTable[comboToKey({ lhs, rhs, n, unit, derived, })]);
+	const getValues = (lhs, rhs, n, unit) =>
+		dataTable[comboToKey({ lhs, rhs, n, unit, })];
 
 	const Component = () => (
 		<div>
 			<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
 
+			<code>How to read:</code>
+
+			<table>
+				<tbody>
+					<tr>
+						<td>value</td>
+						<td>(change in value)</td>
+						<td>[deviation in value]</td>
+					</tr>
+					<tr>
+						<td>std deviation</td>
+						<td>(change in std deviation)</td>
+						<td>[stability]</td>
+					</tr>
+				</tbody>
+			</table>
+
 			{currencies.map(currency => (
 				<Currency
 					key = { currency }
 					currency = { currency }
-					getDerived = { getDerived }
+					getValues = { getValues }
 				/>
 			))}
 
-			{pairs.map(([lhs, rhs,]) => (
-				<Exchange
-					key = { lhs + rhs }
-					getDerived = { getDerived }
-					lhs = { lhs }
-					rhs = { rhs }
-				/>
-			))}
 		</div>
 	);
 

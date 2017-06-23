@@ -12,10 +12,6 @@ export default [
 		unit: "week",
 	},
 	{
-		n: 2,
-		unit: "weeks",
-	},
-	{
 		n: 1,
 		unit: "month",
 	},

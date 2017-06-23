@@ -7,6 +7,8 @@ import derived from "./derived";
 
 import comboToKey from "./comboToKey";
 
+const threeMonths = { n: 3, unit: "months", };
+
 const allCombos = R.flatten(
 	pairs.map(([lhs, rhs,]) =>
 		periods.map(({ n, unit, }) =>
@@ -29,19 +31,87 @@ export default connection =>
 	)
 		.then(R.fromPairs)
 		.then(data =>
-			R.reduce(
-				(data, combo) => ({
-					...data,
-					[comboToKey(combo)]: data[comboToKey(combo)] /
+			pairs.map(([lhs, rhs,]) =>
+				periods.map(({ n, unit, }) => ({
+					lhs,
+					rhs,
+					n,
+					unit,
+
+					avg: data[
+						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
+					],
+					avgDelta: data[
+						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
+					] -
 						data[
 							comboToKey({
-								...combo,
-								n: 3,
-								unit: "months",
+								lhs,
+								rhs,
+								n,
+								unit,
+								derived: "avg",
+								...threeMonths,
 							})
 						],
-				}),
-				data,
-				allCombos,
+					avgDeviations: (data[
+						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
+					] -
+						data[
+							comboToKey({
+								lhs,
+								rhs,
+								n,
+								unit,
+								derived: "avg",
+								...threeMonths,
+							})
+						]) /
+						data[
+							comboToKey({
+								lhs,
+								rhs,
+								n,
+								unit,
+								derived: "stddev",
+								...threeMonths,
+							})
+						],
+
+					stddev: data[
+						comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
+					],
+
+					stddevDelta: data[
+						comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
+					] -
+						data[
+							comboToKey({
+								lhs,
+								rhs,
+								n,
+								unit,
+								derived: "stddev",
+								...threeMonths,
+							})
+						],
+
+					stability: data[
+						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
+					] /
+						data[
+							comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
+						],
+				})),
 			),
-		);
+		)
+		.then(R.flatten)
+		.then(
+			R.map(({ lhs, rhs, n, unit, ...rest }) => [
+				comboToKey({ lhs, rhs, n, unit, }),
+				rest,
+			]),
+		)
+		.then(R.fromPairs);
+//.then(data =>
+//);
