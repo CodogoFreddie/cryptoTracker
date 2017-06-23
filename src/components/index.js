@@ -45,6 +45,12 @@ export default dataTable => {
 					getValues = { getValues }
 				/>
 			))}
+		
+			<code>
+				Coming soon:
+					+ Buy/Sell presure
+					+ Stats from multipul exchanges
+			</code>
 
 		</div>
 	);
