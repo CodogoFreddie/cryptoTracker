@@ -1,19 +1,24 @@
-import moment from "moment";
-
 import comboToKey from "./comboToKey";
 
-export default (connection, lhs, rhs, n, unit, derived) =>
+export default (connection, lhs, rhs, before, after, derived) =>
 	new Promise(done =>
 		connection.query(
 			{
-				sql: `SELECT ${derived.toUpperCase()}(rate) FROM crypto_tracker.rates WHERE timestamp > ? AND lhs = ? AND rhs = ?`,
+				sql: `
+				SELECT ${derived.toUpperCase()}(rate)
+					FROM crypto_tracker.rates
+						WHERE
+							timestamp < ?
+						AND
+							timestamp > ?
+						AND
+							lhs = ?
+						AND
+							rhs = ?
+				`,
 				timeout: 40000,
-				values: [moment().subtract(n, unit).unix(), lhs, rhs,],
+				values: [before, after, lhs, rhs,],
 			},
-			(err, res) =>
-				done([
-					comboToKey({ lhs, rhs, n, unit, derived, }),
-					res[0][`${derived.toUpperCase()}(rate)`],
-				]),
+			(err, res) => done(res[0][`${derived.toUpperCase()}(rate)`]),
 		),
 	);

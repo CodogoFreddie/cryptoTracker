@@ -1,117 +1,98 @@
+import moment from "moment";
 import R from "ramda";
 
-import periods from "./periods";
 import pairs from "./pairs";
 import getDerived from "./getDerived";
-import derived from "./derived";
 
-import comboToKey from "./comboToKey";
+export default connection => {
+	const now = moment().unix();
+	const twelveHoursAgo = moment().subtract(12, "hours").unix();
+	const oneDayAgo = moment().subtract(1, "day").unix();
+	const threeMonthsAgo = moment().subtract(3, "months").unix();
 
-const threeMonths = { n: 3, unit: "months", };
+	return Promise.all(
+		pairs.map(([lhs, rhs,]) =>
+			Promise.all([
+				Promise.resolve(lhs),
+				Promise.resolve(rhs),
 
-const allCombos = R.flatten(
-	pairs.map(([lhs, rhs,]) =>
-		periods.map(({ n, unit, }) =>
-			derived.map(derived => ({
-				lhs,
-				rhs,
-				n,
-				unit,
-				derived,
-			})),
-		),
-	),
-);
+				getDerived(connection, lhs, rhs, now, twelveHoursAgo, "min"),
+				getDerived(connection, lhs, rhs, now, twelveHoursAgo, "avg"),
+				getDerived(connection, lhs, rhs, now, twelveHoursAgo, "max"),
 
-export default connection =>
-	Promise.all(
-		allCombos.map(({ lhs, rhs, n, unit, derived, }) =>
-			getDerived(connection, lhs, rhs, n, unit, derived),
-		),
-	)
-		.then(R.fromPairs)
-		.then(data =>
-			pairs.map(([lhs, rhs,]) =>
-				periods.map(({ n, unit, }) => ({
+				getDerived(
+					connection,
 					lhs,
 					rhs,
-					n,
-					unit,
+					twelveHoursAgo,
+					oneDayAgo,
+					"min",
+				),
+				getDerived(
+					connection,
+					lhs,
+					rhs,
+					twelveHoursAgo,
+					oneDayAgo,
+					"avg",
+				),
+				getDerived(
+					connection,
+					lhs,
+					rhs,
+					twelveHoursAgo,
+					oneDayAgo,
+					"max",
+				),
 
-					avg: data[
-						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
-					],
-					avgDelta: data[
-						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
-					] -
-						data[
-							comboToKey({
-								lhs,
-								rhs,
-								n,
-								unit,
-								derived: "avg",
-								...threeMonths,
-							})
-						],
-					avgDeviations: (data[
-						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
-					] -
-						data[
-							comboToKey({
-								lhs,
-								rhs,
-								n,
-								unit,
-								derived: "avg",
-								...threeMonths,
-							})
-						]) /
-						data[
-							comboToKey({
-								lhs,
-								rhs,
-								n,
-								unit,
-								derived: "stddev",
-								...threeMonths,
-							})
-						],
-
-					stddev: data[
-						comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
-					],
-
-					stddevDelta: data[
-						comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
-					] -
-						data[
-							comboToKey({
-								lhs,
-								rhs,
-								n,
-								unit,
-								derived: "stddev",
-								...threeMonths,
-							})
-						],
-
-					stability: data[
-						comboToKey({ lhs, rhs, n, unit, derived: "avg", })
-					] /
-						data[
-							comboToKey({ lhs, rhs, n, unit, derived: "stddev", })
-						],
-				})),
-			),
-		)
-		.then(R.flatten)
-		.then(
-			R.map(({ lhs, rhs, n, unit, ...rest }) => [
-				comboToKey({ lhs, rhs, n, unit, }),
-				rest,
+				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "min"),
+				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "avg"),
+				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "stddev"),
+				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "min"),
 			]),
-		)
-		.then(R.fromPairs);
-//.then(data =>
-//);
+		),
+	).then(
+		R.map(
+			(
+				[
+					lhs,
+					rhs,
+
+					min,
+					avg,
+					max,
+
+					prevMin,
+					prevAvg,
+					prevMax,
+
+					longMin,
+					longAvg,
+					stddev,
+					longMax,
+				],
+			) => ({
+				lhs,
+				rhs,
+
+				max: {
+					stdDev: ((max - longAvg) / stddev).toPrecision(2),
+					value: max.toPrecision(4),
+					delta: (max - prevMax).toPrecision(2),
+				},
+
+				avg: {
+					stdDev: ((avg - longAvg) / stddev).toPrecision(2),
+					value: avg.toPrecision(4),
+					delta: (avg - prevAvg).toPrecision(2),
+				},
+
+				min: {
+					stdDev: ((min - longAvg) / stddev).toPrecision(2),
+					value: min.toPrecision(4),
+					delta: (min - prevMin).toPrecision(2),
+				},
+			}),
+		),
+	);
+};
