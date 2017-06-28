@@ -12,7 +12,8 @@ const connection = mysql.createConnection({
 	password: "",
 });
 
-collateData(connection).then(report).then(sendReportAsMail);
+collateData(connection).then(console.log);
+//.then(report).then(sendReportAsMail);
 
 connection.end(function(err) {
 	console.log("DONE SQL");
