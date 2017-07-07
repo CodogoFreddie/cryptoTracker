@@ -43,9 +43,9 @@ const ExchangeHeader = styled.div`
 `;
 
 const Table = styled.table`
-	table-layout: fixed;
-	width: 15em;
 	font-family: monospace;
+	min-width: 15em;
+	table-layout: fixed;
 `;
 
 const Header = styled.td`
@@ -110,6 +110,10 @@ export default data => {
 		<Root>
 			<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
 
+			<code>
+				Sorry that there's too much data, Next thing on my to do list is to sort and order the information
+			</code>
+
 			<ExchangesContainer>
 
 				{R.pipe(
@@ -125,7 +129,6 @@ export default data => {
 			<code>
 				Coming soon:
 				+ Buy/Sell presure
-				+ Stats from multipul exchanges
 			</code>
 
 		</Root>
@@ -135,5 +138,8 @@ export default data => {
 	const html = renderToStaticMarkup(sheet.collectStyles(<Component />));
 	const css = sheet.getStyleTags();
 
-	return `<html><head>${css}</head><body>${html}</body></html>`;
+	return {
+		data,
+		html: `<html><head>${css}</head><body>${html}</body></html>`,
+	};
 };
