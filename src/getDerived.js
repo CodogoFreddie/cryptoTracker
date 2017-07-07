@@ -1,5 +1,3 @@
-import comboToKey from "./comboToKey";
-
 export default (connection, lhs, rhs, before, after, derived) =>
 	new Promise(done =>
 		connection.query(

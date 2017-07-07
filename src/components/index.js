@@ -1,50 +1,126 @@
 import React from "react";
+import R from "ramda";
 import { renderToStaticMarkup, } from "react-dom/server";
 import styled, { ServerStyleSheet, } from "styled-components";
 
 import moment from "moment";
 
-import { currencies, } from "../pairs";
-import comboToKey from "../comboToKey";
-
-import Currency from "./currency";
+const Root = styled.div`
+    font-family: sans-serif;
+`;
 
 const Title = styled.h1`
 	margin: 0;
 `;
 
-export default dataTable => {
-	const getValues = (lhs, rhs, n, unit) =>
-		dataTable[comboToKey({ lhs, rhs, n, unit, })];
+const shadow = (height, over = 0) => {
+	const h = height - over;
+	return `
+				box-shadow:
+					0px ${3 * h}px ${h}px ${-h}px rgba(0, 0, 0, ${h / 10}),
+					0px ${h}px ${2 * h}px ${h}px rgba(0, 0, 0, ${h / 20});
+				z-index: ${height};
+			`;
+};
 
+const ExchangesContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+`;
+
+const ExchangeStyled = styled.div`
+	background-color: #fff;
+	border-radius: 1em;
+	margin: 1em;
+	padding: 1em;
+	${shadow(2)};
+`;
+
+const ExchangeHeader = styled.div`
+	display: flex;
+	justify-content: space-between;
+`;
+
+const Table = styled.table`
+	table-layout: fixed;
+	width: 15em;
+	font-family: monospace;
+`;
+
+const Header = styled.td`
+	text-align: center;
+`;
+
+const DataCellStyled = styled.td`
+	color: ${({ sign, }) => (sign > 0 ? "green" : "red")};
+`;
+
+const DataCell = ({ value, }) => (
+	<DataCellStyled sign = { Math.sign(value) }> {Math.abs(value)} </DataCellStyled>
+);
+
+const Exchange = ({ lhs, rhs, max, avg, min, importance, }) => (
+	<ExchangeStyled>
+		<ExchangeHeader>
+			<span>
+				{lhs} / {rhs}
+			</span>
+			<span>
+				({importance.toPrecision(2)})
+			</span>
+		</ExchangeHeader>
+
+		<Table>
+			<tbody>
+				<tr>
+					<td />
+					<Header>σ</Header>
+					<Header>x</Header>
+					<Header>Δ</Header>
+				</tr>
+
+				<tr>
+					<Header>⎡x⎤</Header>
+					<DataCell value = { max.stdDev } />
+					<td> {max.value} </td>
+					<DataCell value = { max.delta } />
+				</tr>
+
+				<tr>
+					<Header>x</Header>
+					<DataCell value = { avg.stdDev } />
+					<td> {avg.value} </td>
+					<DataCell value = { avg.delta } />
+				</tr>
+
+				<tr>
+					<Header>⎣x⎦</Header>
+					<DataCell value = { min.stdDev } />
+					<td> {min.value} </td>
+					<DataCell value = { min.delta } />
+				</tr>
+			</tbody>
+		</Table>
+	</ExchangeStyled>
+);
+
+export default data => {
 	const Component = () => (
-		<div>
+		<Root>
 			<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
 
-			<code>How to read:</code>
+			<ExchangesContainer>
 
-			<table>
-				<tbody>
-					<tr>
-						<td>value</td>
-						<td>(change in value)</td>
-						<td>[deviation in value]</td>
-					</tr>
-					<tr>
-						<td>std deviation</td>
-						<td>(change in std deviation)</td>
-						<td>[stability]</td>
-					</tr>
-				</tbody>
-			</table>
+				{R.pipe(
+					R.sortBy(R.prop("importance")),
+					R.reverse,
+					R.map(props => (
+						<Exchange key = { props.lhs + props.rhs } { ...props } />
+					)),
+				)(data)}
 
-			{currencies.map(currency => (
-				<Currency
-					key = { currency }
-					currency = { currency }
-					getValues = { getValues }
-				/>
-			))}
+			</ExchangesContainer>
 
 			<code>
 				Coming soon:
@@ -52,7 +128,7 @@ export default dataTable => {
 				+ Stats from multipul exchanges
 			</code>
 
-		</div>
+		</Root>
 	);
 
 	const sheet = new ServerStyleSheet();

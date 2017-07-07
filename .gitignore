@@ -61,3 +61,4 @@ storage
 lib
 src/secrets.js
 .env
+index.html

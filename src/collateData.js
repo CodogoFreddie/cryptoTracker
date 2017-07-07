@@ -4,6 +4,9 @@ import R from "ramda";
 import pairs from "./pairs";
 import getDerived from "./getDerived";
 
+const importanceOfValue = ({ stdDev, value, delta, }) =>
+	Math.abs(delta * stdDev / value);
+
 export default connection => {
 	const now = moment().unix();
 	const twelveHoursAgo = moment().subtract(12, "hours").unix();
@@ -45,54 +48,64 @@ export default connection => {
 					"max",
 				),
 
-				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "min"),
 				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "avg"),
 				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "stddev"),
-				getDerived(connection, lhs, rhs, now, threeMonthsAgo, "min"),
 			]),
 		),
-	).then(
-		R.map(
-			(
-				[
+	)
+		.then(R.filter(([_, __, ___, avg,]) => avg > 1))
+		.then(
+			R.map(
+				(
+					[
+						lhs,
+						rhs,
+
+						min,
+						avg,
+						max,
+
+						prevMin,
+						prevAvg,
+						prevMax,
+
+						longAvg,
+						stddev,
+					],
+				) => ({
 					lhs,
 					rhs,
 
-					min,
-					avg,
-					max,
+					max: {
+						stdDev: ((max - longAvg) / stddev).toFixed(2),
+						value: max.toPrecision(4),
+						delta: (max - prevMax).toFixed(2),
+					},
 
-					prevMin,
-					prevAvg,
-					prevMax,
+					avg: {
+						stdDev: ((avg - longAvg) / stddev).toFixed(2),
+						value: avg.toPrecision(4),
+						delta: (avg - prevAvg).toFixed(2),
+					},
 
-					longMin,
-					longAvg,
-					stddev,
-					longMax,
-				],
-			) => ({
-				lhs,
-				rhs,
+					min: {
+						stdDev: ((min - longAvg) / stddev).toFixed(2),
+						value: min.toPrecision(4),
+						delta: (min - prevMin).toFixed(2),
+					},
+				}),
+			),
+		)
+		.then(
+			R.map(({ max, avg, min, ...rest }) => ({
+				...rest,
+				max,
+				avg,
+				min,
 
-				max: {
-					stdDev: ((max - longAvg) / stddev).toPrecision(2),
-					value: max.toPrecision(4),
-					delta: (max - prevMax).toPrecision(2),
-				},
-
-				avg: {
-					stdDev: ((avg - longAvg) / stddev).toPrecision(2),
-					value: avg.toPrecision(4),
-					delta: (avg - prevAvg).toPrecision(2),
-				},
-
-				min: {
-					stdDev: ((min - longAvg) / stddev).toPrecision(2),
-					value: min.toPrecision(4),
-					delta: (min - prevMin).toPrecision(2),
-				},
-			}),
-		),
-	);
+				importance: importanceOfValue(min) +
+					importanceOfValue(avg) +
+					importanceOfValue(max),
+			})),
+		);
 };
