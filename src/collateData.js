@@ -4,8 +4,7 @@ import R from "ramda";
 import pairs from "./pairs";
 import getDerived from "./getDerived";
 
-const importanceOfValue = ({ stdDev, value, delta, }) =>
-	Math.abs(delta * stdDev / value);
+const importanceOfValue = ({ stdDev, delta, }) => Math.abs(delta * stdDev);
 
 export default connection => {
 	const now = moment().unix();
@@ -77,21 +76,21 @@ export default connection => {
 					rhs,
 
 					max: {
-						stdDev: ((max - longAvg) / stddev).toFixed(2),
-						value: max.toPrecision(4),
-						delta: (max - prevMax).toFixed(2),
+						stdDev: (max - longAvg) / stddev,
+						value: max,
+						delta: (max - prevMax) / max,
 					},
 
 					avg: {
-						stdDev: ((avg - longAvg) / stddev).toFixed(2),
-						value: avg.toPrecision(4),
-						delta: (avg - prevAvg).toFixed(2),
+						stdDev: (avg - longAvg) / stddev,
+						value: avg,
+						delta: (avg - prevAvg) / avg,
 					},
 
 					min: {
-						stdDev: ((min - longAvg) / stddev).toFixed(2),
-						value: min.toPrecision(4),
-						delta: (min - prevMin).toFixed(2),
+						stdDev: (min - longAvg) / stddev,
+						value: min,
+						delta: (min - prevMin) / min,
 					},
 				}),
 			),

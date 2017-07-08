@@ -12,7 +12,7 @@ export default ({ html, }) => {
 	var emailParams = {
 		from: process.env.FROM_EMAIL,
 		to: process.env.TO_EMAILS,
-		subject: `Daily Crypto Report (${moment().format("DD-MM-YY")})`,
+		subject: `Daily Crypto Report (${moment().format("DD-MM-YY A")})`,
 		html,
 	};
 

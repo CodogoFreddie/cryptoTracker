@@ -1,9 +1,11 @@
 import React from "react";
 import R from "ramda";
 import { renderToStaticMarkup, } from "react-dom/server";
-import styled, { ServerStyleSheet, } from "styled-components";
+import styled, { css, ServerStyleSheet, } from "styled-components";
 
 import moment from "moment";
+
+import { currencies, } from "../pairs";
 
 const Root = styled.div`font-family: sans-serif;`;
 
@@ -11,18 +13,18 @@ const Title = styled.h1`margin: 0;`;
 
 const shadow = (height, over = 0) => {
 	const h = height - over;
-	return `
-				box-shadow:
-					0px ${3 * h}px ${h}px ${-h}px rgba(0, 0, 0, ${h / 10}),
-					0px ${h}px ${2 * h}px ${h}px rgba(0, 0, 0, ${h / 20});
-				z-index: ${height};
-			`;
+	return css`
+		box-shadow:
+			0px ${3 * h}px ${h}px ${-h}px rgba(0, 0, 0, ${h / 10}),
+			0px ${h}px ${2 * h}px ${h}px rgba(0, 0, 0, ${h / 20});
+		z-index: ${height};
+	`;
 };
 
 const ExchangesContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	flex-wrap: wrap;
+	overflow-x: scroll;
 `;
 
 const ExchangeStyled = styled.div`
@@ -48,11 +50,19 @@ const Header = styled.td`text-align: center;`;
 
 const DataCellStyled = styled.td`
 	color: ${({ sign, }) => (sign > 0 ? "green" : "red")};
+
+	${({ percent, }) =>
+		percent &&
+		`
+		&::after {
+			content: "%";
+		}
+	`};
 `;
 
-const DataCell = ({ value, }) =>
-	<DataCellStyled sign = { Math.sign(value) }>
-		{" "}{Math.abs(value)}{" "}
+const DataCell = ({ value, percent, }) =>
+	<DataCellStyled percent = { percent } sign = { Math.sign(value) }>
+		{(Math.abs(value) * (percent ? 100 : 1)).toFixed(2)}
 	</DataCellStyled>;
 
 const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
@@ -79,53 +89,64 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
 					<Header>⎡x⎤</Header>
 					<DataCell value = { max.stdDev } />
 					<td>
-						{" "}{max.value}{" "}
+						{max.value.toPrecision(4)}
 					</td>
-					<DataCell value = { max.delta } />
+					<DataCell percent value = { max.delta } />
 				</tr>
 
 				<tr>
 					<Header>x</Header>
 					<DataCell value = { avg.stdDev } />
 					<td>
-						{" "}{avg.value}{" "}
+						{avg.value.toPrecision(4)}
 					</td>
-					<DataCell value = { avg.delta } />
+					<DataCell percent value = { avg.delta } />
 				</tr>
 
 				<tr>
 					<Header>⎣x⎦</Header>
 					<DataCell value = { min.stdDev } />
 					<td>
-						{" "}{min.value}{" "}
+						{min.value.toPrecision(4)}
 					</td>
-					<DataCell value = { min.delta } />
+					<DataCell percent value = { min.delta } />
 				</tr>
 			</tbody>
 		</Table>
 	</ExchangeStyled>;
 
+const CurrencyContainer = styled.div`margin: 1em;`;
+
+const Currency = ({ data, currency, }) =>
+	<CurrencyContainer>
+		<h2>
+			{" "}{currency}{" "}
+		</h2>
+
+		<ExchangesContainer>
+			{R.pipe(
+				R.filter(
+					({ lhs, rhs, }) => lhs === currency || rhs === currency,
+				),
+				R.sortBy(R.prop("importance")),
+				R.reverse,
+				R.map(props =>
+					<Exchange key = { props.lhs + props.rhs } { ...props } />,
+				),
+			)(data)}
+		</ExchangesContainer>
+	</CurrencyContainer>;
+
 export default data => {
 	const Component = () =>
 		<Root>
 			<Title>
-				Crypto Report ({moment().format("DD-MM-YY")})
+				Crypto Report ({moment().format("DD-MM-YY A")})
 			</Title>
 
-			<code>
-				Sorry that there's too much data, Next thing on my to do list is
-				to sort and order the information
-			</code>
-
-			<ExchangesContainer>
-				{R.pipe(
-					R.sortBy(R.prop("importance")),
-					R.reverse,
-					R.map(props =>
-						<Exchange key = { props.lhs + props.rhs } { ...props } />,
-					),
-				)(data)}
-			</ExchangesContainer>
+			{currencies.map(currency =>
+				<Currency key = { currency } data = { data } currency = { currency } />,
+			)}
 
 			<code>Coming soon: + Buy/Sell presure</code>
 		</Root>;
