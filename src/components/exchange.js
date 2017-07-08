@@ -4,23 +4,21 @@ import styled from "styled-components";
 import periods from "../periods";
 import Period from "./period";
 
-const Exchange = styled.div`
-	margin: 1em;
-`;
+const Exchange = styled.div`margin: 1em;`;
 
-const Title = styled.h2`
-	margin: 0;
-`;
+const Title = styled.h2`margin: 0;`;
 
 const Table = styled.table`
 	min-width: 500px;
-    table-layout:fixed;
+	table-layout: fixed;
 	width: 100%;
 `;
 
-export default ({ getDerived, lhs, rhs, }) => (
+export default ({ getDerived, lhs, rhs, }) =>
 	<Exchange>
-		<Title>{lhs} / {rhs}</Title>
+		<Title>
+			{lhs} / {rhs}
+		</Title>
 
 		<Table>
 			<tbody>
@@ -32,7 +30,7 @@ export default ({ getDerived, lhs, rhs, }) => (
 					<td>Data Points</td>
 				</tr>
 
-				{periods.map(({ n, unit, }) => (
+				{periods.map(({ n, unit, }) =>
 					<Period
 						key = { n + unit }
 						getDerived = { getDerived }
@@ -40,9 +38,8 @@ export default ({ getDerived, lhs, rhs, }) => (
 						rhs = { rhs }
 						n = { n }
 						unit = { unit }
-					/>
-				))}
+					/>,
+				)}
 			</tbody>
 		</Table>
-	</Exchange>
-);
+	</Exchange>;

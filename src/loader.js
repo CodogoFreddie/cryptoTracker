@@ -44,7 +44,8 @@ Promise.resolve(currencies.map(R.toUpper).join(","))
 			R.map(({ lhs, rhs, rate, timestamp, }) =>
 				connection.query(
 					{
-						sql: "INSERT INTO crypto_tracker.rates  VALUES ( ?, ?, ?, ? );",
+						sql:
+							"INSERT INTO crypto_tracker.rates  VALUES ( ?, ?, ?, ? );",
 						timeout: 60000, // 60s
 						values: [timestamp, rate, lhs, rhs,],
 					},

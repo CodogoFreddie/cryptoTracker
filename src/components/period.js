@@ -2,13 +2,12 @@ import React from "react";
 import { mix, } from "polished";
 import styled from "styled-components";
 
-const TextCell = styled.td`
-
-`;
+const TextCell = styled.td``;
 
 const NumCell = styled.td`
 	font-family: monospace;
-	${({ score, }) => (score ? `background-color: ${mix(score, "#f00", "#0f0")};` : "")};
+	${({ score, }) =>
+		score ? `background-color: ${mix(score, "#f00", "#0f0")};` : ""};
 `;
 
 export default ({ getDerived, lhs, rhs, n, unit, }) => {
@@ -19,7 +18,9 @@ export default ({ getDerived, lhs, rhs, n, unit, }) => {
 
 	return (
 		<tr>
-			<TextCell> {n} {unit} </TextCell>
+			<TextCell>
+				{" "}{n} {unit}{" "}
+			</TextCell>
 
 			<NumCell>
 				{avg}

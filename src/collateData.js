@@ -103,7 +103,8 @@ export default connection => {
 				avg,
 				min,
 
-				importance: importanceOfValue(min) +
+				importance:
+					importanceOfValue(min) +
 					importanceOfValue(avg) +
 					importanceOfValue(max),
 			})),

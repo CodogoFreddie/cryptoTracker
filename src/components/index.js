@@ -5,13 +5,9 @@ import styled, { ServerStyleSheet, } from "styled-components";
 
 import moment from "moment";
 
-const Root = styled.div`
-    font-family: sans-serif;
-`;
+const Root = styled.div`font-family: sans-serif;`;
 
-const Title = styled.h1`
-	margin: 0;
-`;
+const Title = styled.h1`margin: 0;`;
 
 const shadow = (height, over = 0) => {
 	const h = height - over;
@@ -48,19 +44,18 @@ const Table = styled.table`
 	table-layout: fixed;
 `;
 
-const Header = styled.td`
-	text-align: center;
-`;
+const Header = styled.td`text-align: center;`;
 
 const DataCellStyled = styled.td`
 	color: ${({ sign, }) => (sign > 0 ? "green" : "red")};
 `;
 
-const DataCell = ({ value, }) => (
-	<DataCellStyled sign = { Math.sign(value) }> {Math.abs(value)} </DataCellStyled>
-);
+const DataCell = ({ value, }) =>
+	<DataCellStyled sign = { Math.sign(value) }>
+		{" "}{Math.abs(value)}{" "}
+	</DataCellStyled>;
 
-const Exchange = ({ lhs, rhs, max, avg, min, importance, }) => (
+const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
 	<ExchangeStyled>
 		<ExchangeHeader>
 			<span>
@@ -83,56 +78,57 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, }) => (
 				<tr>
 					<Header>⎡x⎤</Header>
 					<DataCell value = { max.stdDev } />
-					<td> {max.value} </td>
+					<td>
+						{" "}{max.value}{" "}
+					</td>
 					<DataCell value = { max.delta } />
 				</tr>
 
 				<tr>
 					<Header>x</Header>
 					<DataCell value = { avg.stdDev } />
-					<td> {avg.value} </td>
+					<td>
+						{" "}{avg.value}{" "}
+					</td>
 					<DataCell value = { avg.delta } />
 				</tr>
 
 				<tr>
 					<Header>⎣x⎦</Header>
 					<DataCell value = { min.stdDev } />
-					<td> {min.value} </td>
+					<td>
+						{" "}{min.value}{" "}
+					</td>
 					<DataCell value = { min.delta } />
 				</tr>
 			</tbody>
 		</Table>
-	</ExchangeStyled>
-);
+	</ExchangeStyled>;
 
 export default data => {
-	const Component = () => (
+	const Component = () =>
 		<Root>
-			<Title>Crypto Report ({moment().format("DD-MM-YY")})</Title>
+			<Title>
+				Crypto Report ({moment().format("DD-MM-YY")})
+			</Title>
 
 			<code>
-				Sorry that there's too much data, Next thing on my to do list is to sort and order the information
+				Sorry that there's too much data, Next thing on my to do list is
+				to sort and order the information
 			</code>
 
 			<ExchangesContainer>
-
 				{R.pipe(
 					R.sortBy(R.prop("importance")),
 					R.reverse,
-					R.map(props => (
-						<Exchange key = { props.lhs + props.rhs } { ...props } />
-					)),
+					R.map(props =>
+						<Exchange key = { props.lhs + props.rhs } { ...props } />,
+					),
 				)(data)}
-
 			</ExchangesContainer>
 
-			<code>
-				Coming soon:
-				+ Buy/Sell presure
-			</code>
-
-		</Root>
-	);
+			<code>Coming soon: + Buy/Sell presure</code>
+		</Root>;
 
 	const sheet = new ServerStyleSheet();
 	const html = renderToStaticMarkup(sheet.collectStyles(<Component />));
