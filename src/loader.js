@@ -73,7 +73,7 @@ Promise.resolve(currencies.map(R.toUpper).join(","))
 						err
 							? console.error(err)
 							: console.log(
-								[timestamp, rate, lhs, rhs, buy, sell,].join(
+								[timestamp, lhs, rhs, rate, buy, sell,].join(
 									",\t",
 								),
 							),
