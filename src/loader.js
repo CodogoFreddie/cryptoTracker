@@ -10,6 +10,22 @@ import mysql from "mysql";
 
 import { currencies, } from "./pairs";
 
+/*
+
+MariaDB [(none)]> DESCRIBE crypto_tracker.rates;
++-----------+----------------+------+-----+---------+-------+
+| Field     | Type           | Null | Key | Default | Extra |
++-----------+----------------+------+-----+---------+-------+
+| timestamp | int(32)        | YES  |     | NULL    |       |
+| rate      | decimal(32,16) | YES  |     | NULL    |       |
+| lhs       | char(16)       | YES  |     | NULL    |       |
+| rhs       | char(16)       | YES  |     | NULL    |       |
+| buy       | int(32)        | YES  |     | 0       |       |
+| sell      | int(32)        | YES  |     | 0       |       |
++-----------+----------------+------+-----+---------+-------+
+
+*/
+
 const connection = mysql.createConnection({
 	host: "localhost",
 	user: "freddie",
@@ -19,40 +35,48 @@ const connection = mysql.createConnection({
 Promise.resolve(currencies.map(R.toUpper).join(","))
 	.then(
 		syms =>
-			`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${syms}&tsyms=${syms}`,
+			`https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${syms}&tsyms=${syms}`,
 	)
 	.then(shitFetch)
 	.then(x => x.json())
+	.then(R.prop("RAW"))
+	.then(R.toPairs)
+	.then(
+		R.map(([lhs, data,]) =>
+			R.pipe(
+				R.toPairs,
+				R.map(([rhs, { PRICE, VOLUME24HOUR, VOLUME24HOURTO, },]) => ({
+					lhs,
+					rhs,
+					rate: PRICE,
+					buy: VOLUME24HOURTO,
+					sell: VOLUME24HOUR * PRICE,
+					timestamp: moment().unix(),
+				})),
+				R.map(R.over(R.lensProp("lhs"), R.toLower)),
+				R.map(R.over(R.lensProp("rhs"), R.toLower)),
+			)(data),
+		),
+	)
 	.then(
 		R.pipe(
-			R.toPairs,
-			R.map(([lhs, rates,]) =>
-				R.pipe(
-					R.toPairs,
-					R.map(([rhs, rate,]) => ({
-						lhs,
-						rhs,
-						rate,
-					})),
-				)(rates),
-			),
 			R.flatten,
-			R.filter(({ lhs, rhs, }) => lhs !== rhs),
-			R.map(R.over(R.lensProp("lhs"), R.toLower)),
-			R.map(R.over(R.lensProp("rhs"), R.toLower)),
-			R.map(R.assoc("timestamp", moment().unix())),
-			R.map(({ lhs, rhs, rate, timestamp, }) =>
+			R.map(({ lhs, rhs, rate, buy, sell, timestamp, }) =>
 				connection.query(
 					{
 						sql:
-							"INSERT INTO crypto_tracker.rates  VALUES ( ?, ?, ?, ? );",
+							"INSERT INTO crypto_tracker.rates  VALUES ( ?, ?, ?, ?, ?, ? );",
 						timeout: 60000, // 60s
-						values: [timestamp, rate, lhs, rhs,],
+						values: [timestamp, rate, lhs, rhs, buy, sell,],
 					},
 					err =>
 						err
 							? console.error(err)
-							: console.log([timestamp, rate, lhs, rhs,]),
+							: console.log(
+								[timestamp, rate, lhs, rhs, buy, sell,].join(
+									",\t",
+								),
+							),
 				),
 			),
 			ps => Promise.all(ps),

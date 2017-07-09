@@ -15,7 +15,6 @@ const connection = mysql.createConnection({
 collateData(connection)
 	.then(report)
 	//.then( ({ html, }) => console.log(html));
-
 	.then(sendReportAsMail);
 
 connection.end(function(err) {
