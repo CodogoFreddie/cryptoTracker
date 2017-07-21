@@ -60,16 +60,19 @@ const DataCellStyled = styled.td`
 	`};
 `;
 
-const DataCell = ({ value, percent, }) =>
-	<DataCellStyled percent = { percent } sign = { Math.sign(value) }>
+const DataCell = ({ value, percent, reverse, }) =>
+	<DataCellStyled
+		percent = { percent }
+		sign = { Math.sign(value) * (reverse ? -1 : 1) }
+	>
 		{(Math.abs(value) * (percent ? 100 : 1)).toFixed(2)}
 	</DataCellStyled>;
 
-const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
+const Exchange = ({ lhs, rhs, max, avg, min, importance, reverse, }) =>
 	<ExchangeStyled>
 		<ExchangeHeader>
 			<span>
-				{lhs} {avg.delta > 0 ? "\\" : "/"} {rhs}
+				{lhs} / {rhs}
 			</span>
 			<span>
 				({importance.toPrecision(2)})
@@ -87,29 +90,29 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
 
 				<tr>
 					<Header>⎡x⎤</Header>
-					<DataCell value = { max.stdDev } />
+					<DataCell reverse = { reverse } value = { max.stdDev } />
 					<td>
 						{max.value.toPrecision(4)}
 					</td>
-					<DataCell percent value = { max.delta } />
+					<DataCell reverse = { reverse } percent value = { max.delta } />
 				</tr>
 
 				<tr>
 					<Header>x</Header>
-					<DataCell value = { avg.stdDev } />
+					<DataCell reverse = { reverse } value = { avg.stdDev } />
 					<td>
 						{avg.value.toPrecision(4)}
 					</td>
-					<DataCell percent value = { avg.delta } />
+					<DataCell reverse = { reverse } percent value = { avg.delta } />
 				</tr>
 
 				<tr>
 					<Header>⎣x⎦</Header>
-					<DataCell value = { min.stdDev } />
+					<DataCell reverse = { reverse } value = { min.stdDev } />
 					<td>
 						{min.value.toPrecision(4)}
 					</td>
-					<DataCell percent value = { min.delta } />
+					<DataCell reverse = { reverse } percent value = { min.delta } />
 				</tr>
 			</tbody>
 		</Table>
@@ -131,7 +134,11 @@ const Currency = ({ data, currency, }) =>
 				R.sortBy(R.prop("importance")),
 				R.reverse,
 				R.map(props =>
-					<Exchange key = { props.lhs + props.rhs } { ...props } />,
+					<Exchange
+						key = { props.lhs + props.rhs }
+						{ ...props }
+						reverse = { currency === props.rhs }
+					/>,
 				),
 			)(data)}
 		</ExchangesContainer>
