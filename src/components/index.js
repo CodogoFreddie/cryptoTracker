@@ -69,7 +69,7 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, }) =>
 	<ExchangeStyled>
 		<ExchangeHeader>
 			<span>
-				{lhs} / {rhs}
+				{lhs} {avg.delta > 0 ? "\\" : "/"} {rhs}
 			</span>
 			<span>
 				({importance.toPrecision(2)})
