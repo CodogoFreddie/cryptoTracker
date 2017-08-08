@@ -15,7 +15,7 @@ export default (connection, lhs, rhs, before, after, derived) =>
 							rhs = ?
 				`,
 				timeout: 40000,
-				values: [before, after, lhs, rhs,],
+				values: [before, after, lhs, rhs],
 			},
 			(err, res) => done(res[0][`${derived.toUpperCase()}(rate)`]),
 		),

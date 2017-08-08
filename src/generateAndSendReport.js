@@ -12,10 +12,7 @@ const connection = mysql.createConnection({
 	password: "",
 });
 
-collateData(connection)
-	.then(report)
-	//.then( ({ html, }) => console.log(html));
-	.then(sendReportAsMail);
+collateData(connection).then(report).then(sendReportAsMail);
 
 connection.end(function(err) {
 	console.log("DONE SQL");

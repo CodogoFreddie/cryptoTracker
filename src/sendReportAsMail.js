@@ -8,15 +8,34 @@ const mailgunClient = mailgun({
 	domain: process.env.DOMAIN,
 });
 
-export default ({ html, }) => {
+export default ({ html, data }) => {
+	const importantStuff = data
+		.filter(
+			({ max, avg, min }) =>
+				Math.abs(max.stdDev) > 2 ||
+				Math.abs(avg.stdDev) > 2 ||
+				Math.abs(min.stdDev) > 2,
+		)
+		.sort(
+			(x, y) =>
+				x.max.stdDev > y.max.stdDev
+					? 1
+					: -1 + x.avg.stdDev > y.avg.stdDev
+						? 1
+						: -1 + x.min.stdDev > y.min.stdDev ? 1 : -1,
+		)
+		.reverse()
+		.map(({ lhs, rhs }) => `${lhs}/${rhs}`)
+		.join(" ");
+
 	var emailParams = {
 		from: process.env.FROM_EMAIL,
 		to: process.env.TO_EMAILS,
-		subject: `Daily Crypto Report (${moment().format("DD-MM-YY A")})`,
+		subject: `Daily Crypto Report ${importantStuff} (${moment().format(
+			"DD-MM-YY A",
+		)})`,
 		html,
 	};
-
-	console.log("sending mail");
 
 	mailgunClient.messages().send(emailParams, (err, resp) => {
 		if (err) {
