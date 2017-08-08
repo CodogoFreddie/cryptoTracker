@@ -14,16 +14,16 @@ export const currencies = [
 export default R.pipe(
 	R.flatten,
 	R.filter(Boolean),
-	R.map(({ lhs, rhs }) => [lhs, rhs]),
+	R.map(({ lhs, rhs, }) => [lhs, rhs,]),
 )(
 	currencies.map((lhs, li) =>
 		currencies.map(
 			(rhs, ri) =>
 				ri !== li
 					? {
-							lhs,
-							rhs,
-						}
+						lhs,
+						rhs,
+					}
 					: null,
 		),
 	),

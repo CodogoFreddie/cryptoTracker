@@ -8,7 +8,7 @@ import moment from "moment";
 import R from "ramda";
 import mysql from "mysql";
 
-import { currencies } from "./pairs";
+import { currencies, } from "./pairs";
 
 /*
 
@@ -42,10 +42,10 @@ Promise.resolve(currencies.map(R.toUpper).join(","))
 	.then(R.prop("RAW"))
 	.then(R.toPairs)
 	.then(
-		R.map(([lhs, data]) =>
+		R.map(([lhs, data,]) =>
 			R.pipe(
 				R.toPairs,
-				R.map(([rhs, { PRICE, VOLUME24HOUR, VOLUME24HOURTO }]) => ({
+				R.map(([rhs, { PRICE, VOLUME24HOUR, VOLUME24HOURTO, },]) => ({
 					lhs,
 					rhs,
 					rate: PRICE,
@@ -61,22 +61,22 @@ Promise.resolve(currencies.map(R.toUpper).join(","))
 	.then(
 		R.pipe(
 			R.flatten,
-			R.map(({ lhs, rhs, rate, buy, sell, timestamp }) =>
+			R.map(({ lhs, rhs, rate, buy, sell, timestamp, }) =>
 				connection.query(
 					{
 						sql:
 							"INSERT INTO crypto_tracker.rates  VALUES ( ?, ?, ?, ?, ?, ? );",
 						timeout: 60000, // 60s
-						values: [timestamp, rate, lhs, rhs, buy, sell],
+						values: [timestamp, rate, lhs, rhs, buy, sell,],
 					},
 					err =>
 						err
 							? console.error(err)
 							: console.log(
-									[timestamp, lhs, rhs, rate, buy, sell].join(
-										",\t",
-									),
+								[timestamp, lhs, rhs, rate, buy, sell,].join(
+									",\t",
 								),
+							),
 				),
 			),
 			ps => Promise.all(ps),

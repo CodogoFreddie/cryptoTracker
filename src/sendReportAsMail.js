@@ -8,10 +8,10 @@ const mailgunClient = mailgun({
 	domain: process.env.DOMAIN,
 });
 
-export default ({ html, data }) => {
+export default ({ html, data, }) => {
 	const importantStuff = data
 		.filter(
-			({ max, avg, min }) =>
+			({ max, avg, min, }) =>
 				Math.abs(max.stdDev) > 2 ||
 				Math.abs(avg.stdDev) > 2 ||
 				Math.abs(min.stdDev) > 2,
@@ -25,7 +25,7 @@ export default ({ html, data }) => {
 						: -1 + x.min.stdDev > y.min.stdDev ? 1 : -1,
 		)
 		.reverse()
-		.map(({ lhs, rhs }) => `${lhs}/${rhs}`)
+		.map(({ lhs, rhs, }) => `${lhs}/${rhs}`)
 		.join(" ");
 
 	var emailParams = {

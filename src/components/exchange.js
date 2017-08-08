@@ -14,7 +14,7 @@ const Table = styled.table`
 	width: 100%;
 `;
 
-export default ({ getDerived, lhs, rhs }) =>
+export default ({ getDerived, lhs, rhs, }) =>
 	<Exchange>
 		<Title>
 			{lhs} / {rhs}
@@ -30,14 +30,14 @@ export default ({ getDerived, lhs, rhs }) =>
 					<td>Data Points</td>
 				</tr>
 
-				{periods.map(({ n, unit }) =>
+				{periods.map(({ n, unit, }) =>
 					<Period
-						key={n + unit}
-						getDerived={getDerived}
-						lhs={lhs}
-						rhs={rhs}
-						n={n}
-						unit={unit}
+						key = { n + unit }
+						getDerived = { getDerived }
+						lhs = { lhs }
+						rhs = { rhs }
+						n = { n }
+						unit = { unit }
 					/>,
 				)}
 			</tbody>

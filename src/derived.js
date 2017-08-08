@@ -1,1 +1,1 @@
-export default ["avg", "stddev", "count"];
+export default ["avg", "stddev", "count",];

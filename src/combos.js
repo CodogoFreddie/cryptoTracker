@@ -5,8 +5,8 @@ import periods from "./periods";
 import deriveds from "./derived";
 
 export default R.flatten(
-	pairs.map(([lhs, rhs]) =>
-		periods.map(({ n, unit }) =>
+	pairs.map(([lhs, rhs,]) =>
+		periods.map(({ n, unit, }) =>
 			deriveds.map(derived => ({
 				lhs,
 				rhs,

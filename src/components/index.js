@@ -1,11 +1,11 @@
 import React from "react";
 import R from "ramda";
-import { renderToStaticMarkup } from "react-dom/server";
-import styled, { css, ServerStyleSheet } from "styled-components";
+import { renderToStaticMarkup, } from "react-dom/server";
+import styled, { css, ServerStyleSheet, } from "styled-components";
 
 import moment from "moment";
 
-import { currencies } from "../pairs";
+import { currencies, } from "../pairs";
 
 const Root = styled.div`font-family: sans-serif;`;
 
@@ -49,9 +49,9 @@ const Table = styled.table`
 const Header = styled.td`text-align: center;`;
 
 const DataCellStyled = styled.td`
-	color: ${({ sign }) => (sign > 0 ? "green" : "red")};
+	color: ${({ sign, }) => (sign > 0 ? "green" : "red")};
 
-	${({ percent }) =>
+	${({ percent, }) =>
 		percent &&
 		`
 		&::after {
@@ -60,15 +60,15 @@ const DataCellStyled = styled.td`
 	`};
 `;
 
-const DataCell = ({ value, percent, reverse }) =>
+const DataCell = ({ value, percent, reverse, }) =>
 	<DataCellStyled
-		percent={percent}
-		sign={Math.sign(value) * (reverse ? -1 : 1)}
+		percent = { percent }
+		sign = { Math.sign(value) * (reverse ? -1 : 1) }
 	>
 		{(Math.abs(value) * (percent ? 100 : 1)).toFixed(2)}
 	</DataCellStyled>;
 
-const Exchange = ({ lhs, rhs, max, avg, min, importance, reverse }) =>
+const Exchange = ({ lhs, rhs, max, avg, min, importance, reverse, }) =>
 	<ExchangeStyled>
 		<ExchangeHeader>
 			<span>
@@ -90,29 +90,29 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, reverse }) =>
 
 				<tr>
 					<Header>⎡x⎤</Header>
-					<DataCell reverse={reverse} value={max.stdDev} />
+					<DataCell reverse = { reverse } value = { max.stdDev } />
 					<td>
 						{max.value.toPrecision(4)}
 					</td>
-					<DataCell reverse={reverse} percent value={max.delta} />
+					<DataCell reverse = { reverse } percent value = { max.delta } />
 				</tr>
 
 				<tr>
 					<Header>x</Header>
-					<DataCell reverse={reverse} value={avg.stdDev} />
+					<DataCell reverse = { reverse } value = { avg.stdDev } />
 					<td>
 						{avg.value.toPrecision(4)}
 					</td>
-					<DataCell reverse={reverse} percent value={avg.delta} />
+					<DataCell reverse = { reverse } percent value = { avg.delta } />
 				</tr>
 
 				<tr>
 					<Header>⎣x⎦</Header>
-					<DataCell reverse={reverse} value={min.stdDev} />
+					<DataCell reverse = { reverse } value = { min.stdDev } />
 					<td>
 						{min.value.toPrecision(4)}
 					</td>
-					<DataCell reverse={reverse} percent value={min.delta} />
+					<DataCell reverse = { reverse } percent value = { min.delta } />
 				</tr>
 			</tbody>
 		</Table>
@@ -120,7 +120,7 @@ const Exchange = ({ lhs, rhs, max, avg, min, importance, reverse }) =>
 
 const CurrencyContainer = styled.div`margin: 1em;`;
 
-const Currency = ({ data, currency }) =>
+const Currency = ({ data, currency, }) =>
 	<CurrencyContainer>
 		<h2>
 			{" "}{currency}{" "}
@@ -129,15 +129,15 @@ const Currency = ({ data, currency }) =>
 		<ExchangesContainer>
 			{R.pipe(
 				R.filter(
-					({ lhs, rhs }) => lhs === currency || rhs === currency,
+					({ lhs, rhs, }) => lhs === currency || rhs === currency,
 				),
 				R.sortBy(R.prop("importance")),
 				R.reverse,
 				R.map(props =>
 					<Exchange
-						key={props.lhs + props.rhs}
-						{...props}
-						reverse={currency === props.rhs}
+						key = { props.lhs + props.rhs }
+						{ ...props }
+						reverse = { currency === props.rhs }
 					/>,
 				),
 			)(data)}
@@ -152,7 +152,7 @@ export default data => {
 			</Title>
 
 			{currencies.map(currency =>
-				<Currency key={currency} data={data} currency={currency} />,
+				<Currency key = { currency } data = { data } currency = { currency } />,
 			)}
 
 			<code>Coming soon: + Buy/Sell presure</code>

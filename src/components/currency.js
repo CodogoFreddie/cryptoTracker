@@ -2,7 +2,7 @@ import R from "ramda";
 import React from "react";
 import styled from "styled-components";
 
-import { currencies } from "../pairs";
+import { currencies, } from "../pairs";
 import periods from "../periods";
 import sigFig from "../sigFig";
 
@@ -41,7 +41,7 @@ const StdDevCell = styled.td`
 	border-bottom-width: 1;
 `;
 
-export default ({ currency, getValues }) => {
+export default ({ currency, getValues, }) => {
 	return (
 		<Container>
 			<Currency>
@@ -52,16 +52,16 @@ export default ({ currency, getValues }) => {
 				<tbody>
 					<tr>
 						<td />
-						{periods.map(({ n, unit }) =>
-							<TitleCell key={unit + n}>
+						{periods.map(({ n, unit, }) =>
+							<TitleCell key = { unit + n }>
 								{n} {unit}
 							</TitleCell>,
 						)}
 					</tr>
 
 					<AverageRow>
-						<TitleCell rowSpan="2">Avg</TitleCell>
-						{periods.map(({ n, unit }) => [
+						<TitleCell rowSpan = "2">Avg</TitleCell>
+						{periods.map(({ n, unit, }) => [
 							<ValueCell>
 								{sigFig(4)(
 									R.mean(
@@ -116,7 +116,7 @@ export default ({ currency, getValues }) => {
 					</AverageRow>
 
 					<AverageRow>
-						{periods.map(({ n, unit }) => [
+						{periods.map(({ n, unit, }) => [
 							<StdDevCell>
 								{sigFig(4)(
 									R.mean(
@@ -172,11 +172,11 @@ export default ({ currency, getValues }) => {
 
 					{currencies.filter(x => x !== currency).map(rhs => [
 						<ValueRow>
-							<TitleCell rowSpan="2">
+							<TitleCell rowSpan = "2">
 								{rhs}
 							</TitleCell>
 
-							{periods.map(({ n, unit }) => [
+							{periods.map(({ n, unit, }) => [
 								<ValueCell>
 									{sigFig(4)(
 										getValues(currency, rhs, n, unit).avg,
@@ -196,7 +196,7 @@ export default ({ currency, getValues }) => {
 							])}
 						</ValueRow>,
 						<StdDevRow>
-							{periods.map(({ n, unit }) => [
+							{periods.map(({ n, unit, }) => [
 								<StdDevCell>
 									{sigFig(4)(
 										getValues(currency, rhs, n, unit)

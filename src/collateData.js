@@ -4,7 +4,7 @@ import R from "ramda";
 import pairs from "./pairs";
 import getDerived from "./getDerived";
 
-const importanceOfValue = ({ stdDev, delta }) => Math.abs(delta * stdDev);
+const importanceOfValue = ({ stdDev, delta, }) => Math.abs(delta * stdDev);
 
 export default connection => {
 	const now = moment().unix();
@@ -13,7 +13,7 @@ export default connection => {
 	const threeMonthsAgo = moment().subtract(3, "months").unix();
 
 	return Promise.all(
-		pairs.map(([lhs, rhs]) =>
+		pairs.map(([lhs, rhs,]) =>
 			Promise.all([
 				Promise.resolve(lhs),
 				Promise.resolve(rhs),
@@ -52,7 +52,7 @@ export default connection => {
 			]),
 		),
 	)
-		.then(R.filter(([_, __, ___, avg]) => avg > 1))
+		.then(R.filter(([_, __, ___, avg,]) => avg > 1))
 		.then(
 			R.map(
 				(
