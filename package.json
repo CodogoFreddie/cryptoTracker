@@ -8,8 +8,7 @@
 		"eslint": "^4.1.1",
 		"eslint-config-codogo": "^1.1.4",
 		"husky": "^0.14.3",
-		"prettier": "^1.5.2",
-		"validate-commit-message": "^3.0.1"
+		"prettier": "^1.5.2"
 	},
 	"eslintConfig": {
 		"extends": "codogo"
@@ -20,7 +19,6 @@
 		]
 	},
 	"scripts": {
-		"commitmsg": "validate-commit-msg",
 		"fetch": "yarn make && node lib/loader.js",
 		"format": "yarn run prettier && eslint --fix src",
 		"freddie-fix-lint": "yarn run format && for f in $( yarn run lint | grep \"cryptoTracker/src\" ) ; do nvim $f ; done",

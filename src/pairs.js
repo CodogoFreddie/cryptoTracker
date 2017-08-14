@@ -1,15 +1,6 @@
 import R from "ramda";
 
-export const currencies = [
-	"btc",
-	"eth",
-	"xmr",
-	"zec",
-	"xvg",
-	"etc",
-	"gbp",
-	"usd",
-];
+export const currencies = ["gbp", "btc", "eth", "xmr", "doge", "bat", "omg",];
 
 export default R.pipe(
 	R.flatten,
