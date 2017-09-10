@@ -24,7 +24,6 @@ const shadow = (height, over = 0) => {
 const ExchangesContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	overflow-x: scroll;
 `;
 
 const ExchangeStyled = styled.div`
