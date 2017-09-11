@@ -5,6 +5,7 @@ export const currencies = [
 	"eth",
 	"xmr",
 	"mco",
+	"doge",
 	"neo",
 	"omg",
 	"etc",
