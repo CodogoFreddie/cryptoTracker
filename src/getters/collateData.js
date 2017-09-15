@@ -1,7 +1,7 @@
 import moment from "moment";
 import R from "ramda";
 
-import pairs from "./pairs";
+import pairs from "../lib/pairs";
 import getDerived from "./getDerived";
 
 const importanceOfValue = ({ stdDev, delta, }) => Math.abs(delta * stdDev);

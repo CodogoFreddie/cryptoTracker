@@ -8,7 +8,7 @@ import moment from "moment";
 import R from "ramda";
 import mysql from "mysql";
 
-import { currencies, } from "./pairs";
+import { currencies, } from "./lib/pairs";
 
 /*
 

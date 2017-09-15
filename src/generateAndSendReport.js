@@ -2,9 +2,9 @@ require("dotenv").config();
 
 import mysql from "mysql";
 
-import collateData from "./collateData";
+import collateData from "./getters/collateData";
 import report from "./components";
-import sendReportAsMail from "./sendReportAsMail";
+import sendReportAsMail from "./lib/sendReportAsMail";
 
 const connection = mysql.createConnection({
 	host: "localhost",

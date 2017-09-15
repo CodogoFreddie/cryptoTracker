@@ -3,7 +3,7 @@ LIB = $(SRC:src/%.js=lib/%.js)
 
 .PHONY: run
 run: lib
-	node lib/generateGraph.js 
+	node lib/renderers/graph.js 
 
 lib: clear $(LIB)
 
