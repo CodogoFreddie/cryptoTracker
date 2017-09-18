@@ -58,7 +58,7 @@ typings/
 .env
 
 storage
-lib
+/lib/
 src/secrets.js
 .env
 index.html
