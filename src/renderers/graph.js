@@ -1,6 +1,5 @@
 import fs from "fs";
 import moment from "moment";
-import mysql from "mysql";
 import R from "ramda";
 import { spawn, } from "child_process";
 
@@ -71,7 +70,7 @@ const generateGraph = connection => (lhs, rhs) =>
 		.then(
 			({ stdDev, mean, }) => `
 		set terminal png size 400,200 enhanced font "Helvetica,10"
-		set output '/tmp/${lhs}-${rhs}.png'
+		set output '/tmp/${lhs}-${rhs}-${moment().format("DD-MM-YY-A")}.png'
 
 		set xdata time
 		set timefmt "%s"
@@ -100,6 +99,14 @@ const generateGraph = connection => (lhs, rhs) =>
 
 			child.stdin.end();
 		})
-		.then(() => `/tmp/${lhs}-${rhs}.png`);
+		.then(() => `/tmp/${lhs}-${rhs}-${moment().format("DD-MM-YY-A")}.png`)
+		.then(filename => {
+			spawn("aws", [
+				"s3",
+				"mv",
+				filename,
+				"s3://freddie-ridell-crypto-tracker-graphs",
+			]);
+		});
 
 export default generateGraph;

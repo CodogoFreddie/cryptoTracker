@@ -1,7 +1,5 @@
 import shitFetch from "node-fetch";
-import moment from "moment";
 import R from "ramda";
-import mysql from "mysql";
 
 const ethAdresses = [
 	"0x271d05428c965e2c487414166e3c5eec543f2f72",
@@ -49,7 +47,6 @@ const getEthAndErc20 = address =>
 				R.prop("tokens"),
 			),
 		);
-//.then(R.tap(x => console.log(JSON.stringify(x, null, 2))));
 
 const getDoge = address =>
 	shitFetch(`https://chain.so/api/v2/get_address_balance/DOGE/${address}`)

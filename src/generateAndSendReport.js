@@ -3,7 +3,7 @@ require("dotenv").config();
 import mysql from "mysql";
 
 import collateData from "./getters/collateData";
-import report from "./components";
+import renderReport from "./components";
 import sendReportAsMail from "./lib/sendReportAsMail";
 
 const connection = mysql.createConnection({
@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 	password: "",
 });
 
-collateData(connection).then(report).then(sendReportAsMail);
+collateData(connection).then(renderReport).then(sendReportAsMail);
 
 connection.end(function(err) {
 	console.log("DONE SQL");

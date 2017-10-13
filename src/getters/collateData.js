@@ -3,14 +3,21 @@ import R from "ramda";
 
 import pairs from "../lib/pairs";
 import getDerived from "./getDerived";
+import generateGraph from "../renderers/graph";
 
-const importanceOfValue = ({ stdDev, delta, }) => Math.abs(delta * stdDev);
+const importanceOfValue = ({ stdDev, }) => Math.abs(stdDev);
 
 export default connection => {
 	const now = moment().unix();
 	const twelveHoursAgo = moment().subtract(12, "hours").unix();
 	const oneDayAgo = moment().subtract(1, "day").unix();
 	const threeMonthsAgo = moment().subtract(3, "months").unix();
+
+	const grapher = generateGraph(connection);
+
+	Promise.all([pairs.map(([lhs, rhs,]) => grapher(lhs, rhs)),]).then(
+		console.log,
+	);
 
 	return Promise.all(
 		pairs.map(([lhs, rhs,]) =>
@@ -102,10 +109,11 @@ export default connection => {
 				avg,
 				min,
 
-				importance:
-					importanceOfValue(min) +
-					importanceOfValue(avg) +
+				importance: Math.max(
+					importanceOfValue(min),
+					importanceOfValue(avg),
 					importanceOfValue(max),
+				),
 			})),
 		);
 };
